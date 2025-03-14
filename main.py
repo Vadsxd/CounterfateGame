@@ -18,14 +18,13 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
-# Инициализация
+# Инициализация объектов
 player = Player(40, 200, 200, 5)
 hole = Hole(50, WIDTH // 2, HEIGHT // 2)
 
-# Основной игровой цикл
+# Основной цикл
 running = True
 while running:
-    # Обработка событий
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
