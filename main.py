@@ -1,5 +1,9 @@
-import pygame
 import sys
+
+import pygame
+
+from Hole import Hole
+from Player import Player
 
 # Инициализация pygame
 pygame.init()
@@ -14,16 +18,9 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
-# Персонаж
-player_size = 50
-player_x = WIDTH // 2 - 200
-player_y = HEIGHT // 2 - 200
-player_speed = 5
-
-# Дыра
-hole_radius = 50
-hole_x = WIDTH // 2
-hole_y = HEIGHT // 2
+# Инициализация
+player = Player(40, 200, 200, 5)
+hole = Hole(50, WIDTH // 2, HEIGHT // 2)
 
 # Основной игровой цикл
 running = True
@@ -34,31 +31,23 @@ while running:
             running = False
 
     # Управление персонажем
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        player_x -= player_speed
-    if keys[pygame.K_RIGHT]:
-        player_x += player_speed
-    if keys[pygame.K_UP]:
-        player_y -= player_speed
-    if keys[pygame.K_DOWN]:
-        player_y += player_speed
+    player.move()
 
     # Ограничение персонажа от выхода за границы экрана
-    player_x = max(0, min(WIDTH - player_size, player_x))
-    player_y = max(0, min(HEIGHT - player_size, player_y))
+    player_x = max(0, min(WIDTH - player.size, player.x))
+    player_y = max(0, min(HEIGHT - player.size, player.y))
 
     # Проверка на падение в дыру
-    distance_to_hole = ((player_x + player_size // 2 - hole_x) ** 2 +
-                        (player_y + player_size // 2 - hole_y) ** 2) ** 0.5
-    if distance_to_hole < hole_radius:
+    distance_to_hole = ((player_x + player.size // 2 - hole.x) ** 2 +
+                        (player_y + player.size // 2 - hole.y) ** 2) ** 0.5
+    if distance_to_hole < hole.radius:
         print("Вы провалились в дыру!")
         running = False
 
     # Отрисовка
     window.fill(WHITE)  # Обновление фона
-    pygame.draw.rect(window, BLACK, (player_x, player_y, player_size, player_size))  # Отрисовка персонажа
-    pygame.draw.circle(window, RED, (hole_x, hole_y), hole_radius)  # Отрисовка дыры
+    pygame.draw.rect(window, BLACK, (player_x, player_y, player.size, player.size))  # Отрисовка персонажа
+    pygame.draw.circle(window, RED, (hole.x, hole.y), hole.radius)  # Отрисовка дыры
 
     pygame.display.flip()  # Обновление окна
 
