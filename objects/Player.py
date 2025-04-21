@@ -2,7 +2,7 @@ import pygame
 
 
 class Player:
-    def __init__(self, size: int, x: int, y: int, speed: int):
+    def __init__(self, size: float, x: int, y: int, speed: int):
         self.size = size
         self.x = x
         self.y = y
@@ -19,5 +19,5 @@ class Player:
         if keys[pygame.K_DOWN]:
             self.y += self.speed
 
-    def distance_to_object(self, obj) -> int:
+    def distance_to_object(self, obj) -> float:
         return ((self.x + self.size // 2 - obj.x) ** 2 + (self.y + self.size // 2 - obj.y) ** 2) ** 0.5

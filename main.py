@@ -17,8 +17,10 @@ pygame.display.set_caption("Game with a Hole")
 # Инициализация объектов
 player = Player(config.PLAYER_SIZE, config.PLAYER_X, config.PLAYER_Y, config.PLAYER_SPEED)
 hole = Hole(config.HOLE_RADIUS, config.HOLE_X, config.HOLE_Y)
+
 # Список вещей на экране
 items = []
+
 # Таймер появления вещей на экране (мс)
 pygame.time.set_timer(config.ITEM_EVENT_ID, config.ITEM_SPAWN_RATE)
 
@@ -28,9 +30,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == config.ITEM_EVENT_ID:
+        elif event.type == config.ITEM_EVENT_ID:  # Спавн вещей
             if len(items) <= config.ITEM_MAX:
                 item = Item(config.ITEM_SIZE, choice(config.ITEM_NAMES))
+                item.check_collision(hole, player, items)
                 items.append(item)
 
     # Управление персонажем
@@ -39,10 +42,6 @@ while running:
     # Ограничение персонажа от выхода за границы экрана
     player_x = max(0, min(config.WIDTH - player.size, player.x))
     player_y = max(0, min(config.HEIGHT - player.size, player.y))
-
-    # Спавн вещей
-    # TODO: спавн не в дыре
-    # TODO: спавн в дистанции от персонажа
 
     # Проверка на падение в дыру
     distance_to_hole = player.distance_to_object(hole)
