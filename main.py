@@ -17,8 +17,10 @@ pygame.display.set_caption("Game with a Hole")
 
 # Инициализация объектов
 player = Player(config.PLAYER_SIZE, config.PLAYER_X, config.PLAYER_Y, config.PLAYER_SPEED)
-hole = Hole(50, config.WIDTH // 2, config.HEIGHT // 2)
+hole = Hole(config.HOLE_RADIUS, config.HOLE_X, config.HOLE_Y)
 items = []
+item_event_id = pygame.USEREVENT + 1
+pygame.time.set_timer(item_event_id, config.ITEM_SPAWN_RATE)
 
 # Основной цикл
 running = True
@@ -26,6 +28,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == item_event_id:
+            if len(items) < config.ITEM_MAX:
+                item = Item(config.ITEM_SIZE, "item")
+                items.append(item)
 
     # Управление персонажем
     player.move()
@@ -36,33 +42,27 @@ while running:
 
     # Спавн вещей
     # TODO: спавн не в дыре
-    # TODO: скорость спавна вещей
     # TODO: спавн в дистанции от персонажа
-    if len(items) < 10:
-        item = Item(20, randint(30, config.WIDTH - 40), randint(30, config.HEIGHT - 40), "item")
-        items.append(item)
 
     # Проверка на падение в дыру
-    distance_to_hole = ((player_x + player.size // 2 - hole.x) ** 2 +
-                        (player_y + player.size // 2 - hole.y) ** 2) ** 0.5
+    distance_to_hole = player.distance_to_object(hole)
     if distance_to_hole < hole.radius:
         print("Вы провалились в дыру!")
         running = False
 
     # Проверка на подбор предмета
     for item in items:
-        distance_to_item = ((player_x + player.size // 2 - item.x) ** 2 +
-                            (player_y + player.size // 2 - item.y) ** 2) ** 0.5
+        distance_to_item = player.distance_to_object(item)
         if distance_to_item < item.radius:
-            print("Был подобран предмет", item.name)
+            print("Был подобран предмет:", item.name)
             items.remove(item)
 
     # Отрисовка
     window.fill(config.WHITE)  # Обновление фона
     pygame.draw.circle(window, config.RED, (hole.x, hole.y), hole.radius)
-    pygame.draw.rect(window, config.BLACK, (player_x, player_y, player.size, player.size))
     for item in items:
         pygame.draw.circle(window, config.GREEN, (item.x, item.y), item.radius)
+    pygame.draw.rect(window, config.BLACK, (player_x, player_y, player.size, player.size))
 
     pygame.display.flip()  # Обновление окна
 
