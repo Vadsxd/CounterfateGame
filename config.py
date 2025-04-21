@@ -18,6 +18,8 @@ ITEM_SIZE = 20
 ITEM_SPAWN_DISTANCE = 30
 ITEM_SPAWN_RATE = 1000
 ITEM_MAX = 10
+ITEM_EVENT_ID = 32867
+ITEM_NAMES = ["garbage", "heal", "power", "speed"]
 
 # Дыра
 HOLE_RADIUS = 50

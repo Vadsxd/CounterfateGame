@@ -1,14 +1,13 @@
-from random import randint
 import sys
+from random import choice
 
 import pygame
 
 import config
 from objects.Hole import Hole
-from objects.Player import Player
 from objects.Item import Item
+from objects.Player import Player
 
-# Инициализация pygame
 pygame.init()
 
 # Определение размеров окна
@@ -18,9 +17,10 @@ pygame.display.set_caption("Game with a Hole")
 # Инициализация объектов
 player = Player(config.PLAYER_SIZE, config.PLAYER_X, config.PLAYER_Y, config.PLAYER_SPEED)
 hole = Hole(config.HOLE_RADIUS, config.HOLE_X, config.HOLE_Y)
+# Список вещей на экране
 items = []
-item_event_id = pygame.USEREVENT + 1
-pygame.time.set_timer(item_event_id, config.ITEM_SPAWN_RATE)
+# Таймер появления вещей на экране (мс)
+pygame.time.set_timer(config.ITEM_EVENT_ID, config.ITEM_SPAWN_RATE)
 
 # Основной цикл
 running = True
@@ -28,9 +28,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == item_event_id:
-            if len(items) < config.ITEM_MAX:
-                item = Item(config.ITEM_SIZE, "item")
+        elif event.type == config.ITEM_EVENT_ID:
+            if len(items) <= config.ITEM_MAX:
+                item = Item(config.ITEM_SIZE, choice(config.ITEM_NAMES))
                 items.append(item)
 
     # Управление персонажем
