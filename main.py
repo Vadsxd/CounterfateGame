@@ -1,5 +1,4 @@
 import sys
-from random import choice
 
 import pygame
 
@@ -15,11 +14,11 @@ window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
 pygame.display.set_caption("Game with a Hole")
 
 # Инициализация объектов
-player = Player(config.PLAYER_SIZE, config.PLAYER_X, config.PLAYER_Y, config.PLAYER_SPEED)
+player = Player(config.PLAYER_SIZE, config.PLAYER_X, config.PLAYER_Y)
 hole = Hole(config.HOLE_RADIUS, config.HOLE_X, config.HOLE_Y)
 
 # Список вещей на экране
-items = []
+map_items = []
 
 # Таймер появления вещей на экране (мс)
 pygame.time.set_timer(config.ITEM_EVENT_ID, config.ITEM_SPAWN_RATE)
@@ -31,10 +30,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == config.ITEM_EVENT_ID:  # Спавн вещей
-            if len(items) <= config.ITEM_MAX:
-                item = Item(config.ITEM_SIZE, choice(config.ITEM_NAMES))
-                item.check_collision(hole, player, items)
-                items.append(item)
+            if len(map_items) <= config.ITEM_MAX:
+                item = Item()
+                item.create()
+                item.check_collision(hole, player, map_items)
+                map_items.append(item)
 
     # Управление персонажем
     player.move()
@@ -50,16 +50,17 @@ while running:
         running = False
 
     # Проверка на подбор предмета
-    for item in items:
+    for item in map_items:
         distance_to_item = player.distance_to_object(item)
         if distance_to_item < item.radius:
             print("Был подобран предмет:", item.name)
-            items.remove(item)
+            player.pick_up_item(item)
+            map_items.remove(item)
 
     # Отрисовка
     window.fill(config.WHITE)  # Обновление фона
     pygame.draw.circle(window, config.RED, (hole.x, hole.y), hole.radius)
-    for item in items:
+    for item in map_items:
         pygame.draw.circle(window, config.GREEN, (item.x, item.y), item.radius)
     pygame.draw.rect(window, config.BLACK, (player_x, player_y, player.size, player.size))
 
