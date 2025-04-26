@@ -29,7 +29,7 @@ ENEMY_SPEED = 1
 # Вещи
 ITEM_RADIUS = 20.0
 ITEM_SPAWN_DISTANCE = 40.0
-ITEM_SPAWN_RATE = 1000
+ITEM_SPAWN_RATE = 500
 ITEM_MAX = 10
 ITEM_EVENT_ID = 32867
 ITEM_NAMES = ["garbage", "heal", "power", "speed"]
@@ -40,4 +40,4 @@ HOLE_X = WIDTH // 2
 HOLE_Y = HEIGHT // 2
 
 # Производительность
-FPS = 45
+FPS = 60

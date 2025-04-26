@@ -1,8 +1,8 @@
-from random import randint, choice
+from random import randint, choice, uniform
+from typing import List
 
 import config
-from objects import Hole
-from objects import Player
+from objects import Enemy, Hole, Player
 
 
 class Item:
@@ -29,9 +29,15 @@ class Item:
     def distance_to_object(self, obj) -> float:
         return ((self.x + self.radius // 2 - obj.x) ** 2 + (self.y + self.radius // 2 - obj.y) ** 2) ** 0.5
 
-    def check_collision(self, hole: Hole, player: Player, items):
-        while (self.distance_to_object(hole) < self.radius + config.ITEM_SPAWN_DISTANCE and
-               self.distance_to_object(player) < self.radius + config.ITEM_SPAWN_DISTANCE and
-               any(self.distance_to_object(item) < self.radius + config.ITEM_SPAWN_DISTANCE for item in items)):
-            self.x = randint(30, config.WIDTH - 40)
-            self.y = randint(30, config.HEIGHT - 40)
+    def check_collision(self, hole: Hole, player: Player, items, enemies: List[Enemy]):
+        while True:
+            self.x = uniform(30.0, config.WIDTH - config.ITEM_SPAWN_DISTANCE)
+            self.y = uniform(30.0, config.HEIGHT - config.ITEM_SPAWN_DISTANCE)
+
+            if (self.distance_to_object(hole) >= self.radius + config.ITEM_SPAWN_DISTANCE and
+                    self.distance_to_object(player) >= self.radius + config.ITEM_SPAWN_DISTANCE and
+                    all(self.distance_to_object(item) >= self.radius + config.ITEM_SPAWN_DISTANCE for item in
+                        items) and
+                    all(self.distance_to_object(enemy) >= self.radius + config.ITEM_SPAWN_DISTANCE for enemy in
+                        enemies)):
+                break

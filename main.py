@@ -12,7 +12,7 @@ pygame.init()
 
 # Определение размеров окна
 window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
-pygame.display.set_caption("Game with a Hole")
+pygame.display.set_caption("Counterfate Game")
 
 # Инициализация объектов
 player = Player()
@@ -38,13 +38,13 @@ while running:
             if len(map_items) <= config.ITEM_MAX:
                 item = Item()
                 item.create()
-                item.check_collision(hole, player, map_items)
+                item.check_collision(hole, player, map_items, map_enemies)
                 map_items.append(item)
         elif event.type == config.ENEMY_EVENT_ID:
             if len(map_enemies) <= config.ENEMY_MAX:  # Спавн противников
                 enemy = Enemy()
                 enemy.create()
-                # TODO: обработка коллизий
+                enemy.check_collision(hole, player, map_items, map_enemies)
                 map_enemies.append(enemy)
 
     # Управление персонажем
