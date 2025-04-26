@@ -35,20 +35,20 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == config.ITEM_EVENT_ID:  # Спавн вещей
-            if len(map_items) <= config.ITEM_MAX:
+            if len(map_items) < config.ITEM_MAX:
                 item = Item()
                 item.create()
                 item.check_collision(hole, player, map_items, map_enemies)
                 map_items.append(item)
         elif event.type == config.ENEMY_EVENT_ID:
-            if len(map_enemies) <= config.ENEMY_MAX:  # Спавн противников
+            if len(map_enemies) < config.ENEMY_MAX:  # Спавн противников
                 enemy = Enemy()
                 enemy.create()
                 enemy.check_collision(hole, player, map_items, map_enemies)
                 map_enemies.append(enemy)
 
     # Управление персонажем
-    player.move()
+    player.action(map_enemies)
 
     # Ограничение персонажа от выхода за границы экрана
     player_x = max(0, min(config.WIDTH - player.size, player.x))

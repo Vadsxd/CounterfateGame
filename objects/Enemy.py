@@ -36,3 +36,9 @@ class Enemy:
                     all(self.distance_to_object(enemy) >= self.size + config.ENEMY_SPAWN_DISTANCE for enemy in
                         enemies)):
                 break
+
+    def take_damage(self, damage):
+        self.health -= damage
+
+    def is_dead(self):
+        return self.health <= 0
