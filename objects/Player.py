@@ -5,10 +5,11 @@ from objects import Item
 
 
 class Player:
-    def __init__(self, size: float, x: int, y: int):
-        self.size = size
-        self.x = x
-        self.y = y
+    def __init__(self):
+        self.size = config.PLAYER_SIZE
+        self.x = config.PLAYER_X
+        self.y = config.PLAYER_Y
+        self.name = "Player"
         self.speed = config.PLAYER_START_SPEED
         self.damage = config.PLAYER_START_DAMAGE
         self.health = config.PLAYER_MAX_HEALTH

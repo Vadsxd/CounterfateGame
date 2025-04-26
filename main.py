@@ -3,6 +3,7 @@ import sys
 import pygame
 
 import config
+from objects.Enemy import Enemy
 from objects.Hole import Hole
 from objects.Item import Item
 from objects.Player import Player
@@ -14,14 +15,18 @@ window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
 pygame.display.set_caption("Game with a Hole")
 
 # Инициализация объектов
-player = Player(config.PLAYER_SIZE, config.PLAYER_X, config.PLAYER_Y)
-hole = Hole(config.HOLE_RADIUS, config.HOLE_X, config.HOLE_Y)
+player = Player()
+hole = Hole()
 
 # Список вещей на экране
 map_items = []
 
-# Таймер появления вещей на экране (мс)
+# Список противников на карте
+map_enemies = []
+
+# Таймер появления вещей и противников на экране (мс)
 pygame.time.set_timer(config.ITEM_EVENT_ID, config.ITEM_SPAWN_RATE)
+pygame.time.set_timer(config.ENEMY_EVENT_ID, config.ENEMY_SPAWN_RATE)
 
 # Основной цикл
 running = True
@@ -35,6 +40,12 @@ while running:
                 item.create()
                 item.check_collision(hole, player, map_items)
                 map_items.append(item)
+        elif event.type == config.ENEMY_EVENT_ID:
+            if len(map_enemies) <= config.ENEMY_MAX:  # Спавн противников
+                enemy = Enemy()
+                enemy.create()
+                # TODO: обработка коллизий
+                map_enemies.append(enemy)
 
     # Управление персонажем
     player.move()
@@ -60,8 +71,16 @@ while running:
     # Отрисовка
     window.fill(config.WHITE)  # Обновление фона
     pygame.draw.circle(window, config.RED, (hole.x, hole.y), hole.radius)
+
+    # Отрисовка предметов
     for item in map_items:
         pygame.draw.circle(window, config.GREEN, (item.x, item.y), item.radius)
+
+    # Отрисовка противников
+    for enemy in map_enemies:
+        pygame.draw.rect(window, config.PURPLE, (enemy.x, enemy.y, enemy.size, enemy.size))
+
+    # Отрисовка игрока
     pygame.draw.rect(window, config.BLACK, (player_x, player_y, player.size, player.size))
 
     pygame.display.flip()  # Обновление окна
