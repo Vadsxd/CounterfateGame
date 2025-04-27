@@ -48,22 +48,28 @@ while running:
                 map_enemies.append(enemy)
 
     # Управление персонажем
-    player.action(map_enemies)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player.x -= player.speed
+    if keys[pygame.K_RIGHT]:
+        player.x += player.speed
+    if keys[pygame.K_UP]:
+        player.y -= player.speed
+    if keys[pygame.K_DOWN]:
+        player.y += player.speed
 
-    # Ограничение персонажа от выхода за границы экрана
-    player_x = max(0, min(config.WIDTH - player.size, player.x))
-    player_y = max(0, min(config.HEIGHT - player.size, player.y))
+    # TODO: Ограничение персонажа от выхода за границы экрана
 
     # Проверка на падение в дыру
     distance_to_hole = player.distance_to_object(hole)
-    if distance_to_hole < hole.radius:
+    if distance_to_hole < player.size / 2:
         print("Вы провалились в дыру!")
         running = False
 
     # Проверка на подбор предмета
     for item in map_items:
         distance_to_item = player.distance_to_object(item)
-        if distance_to_item < item.radius:
+        if distance_to_item < player.size / 2:
             print("Был подобран предмет:", item.name)
             player.pick_up_item(item)
             map_items.remove(item)
@@ -81,7 +87,13 @@ while running:
         pygame.draw.rect(window, config.PURPLE, (enemy.x, enemy.y, enemy.size, enemy.size))
 
     # Отрисовка игрока
-    pygame.draw.rect(window, config.BLACK, (player_x, player_y, player.size, player.size))
+    pygame.draw.rect(window, config.BLACK, (player.x, player.y, player.size, player.size))
+
+    # Атака игрока
+    if keys[pygame.K_SPACE]:
+        player.attack(map_enemies)
+        pygame.draw.circle(window, config.BLACK,
+                           (player.x + player.size / 2, player.y + player.size / 2), player.attack_range, width=1)
 
     pygame.display.flip()  # Обновление окна
 

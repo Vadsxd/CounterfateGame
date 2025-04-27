@@ -3,12 +3,13 @@ from typing import List
 import pygame
 
 import config
-from objects import Item, Enemy
+from objects import Item, Enemy, Hole
 
 
 class Player:
     def __init__(self):
         self.size = config.PLAYER_SIZE
+        # (x,y) top left side of rect
         self.x = config.PLAYER_X
         self.y = config.PLAYER_Y
         self.name = "Player"
@@ -19,24 +20,20 @@ class Player:
         self.max_health = config.PLAYER_MAX_HEALTH
         self.player_items = []
 
-    def action(self, enemies: List[Enemy]):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.x -= self.speed
-        if keys[pygame.K_RIGHT]:
-            self.x += self.speed
-        if keys[pygame.K_UP]:
-            self.y -= self.speed
-        if keys[pygame.K_DOWN]:
-            self.y += self.speed
-        if keys[pygame.K_SPACE]:
-            self.attack(enemies)
-
     def distance_to_object(self, obj) -> float:
-        return ((self.x + self.size // 2 - obj.x) ** 2 + (self.y + self.size // 2 - obj.y) ** 2) ** 0.5
+        player_center_x = self.x + self.size / 2
+        player_center_y = self.y + self.size / 2
+
+        if hasattr(obj, "size"):
+            obj_center_x = obj.x + obj.size / 2
+            obj_center_y = obj.y + obj.size / 2
+            return ((player_center_x - obj_center_x) ** 2 + (player_center_y - obj_center_y) ** 2) ** 0.5
+        else:
+            distance = ((player_center_x - obj.x) ** 2 + (player_center_y - obj.y) ** 2) ** 0.5
+            return distance - obj.radius
 
     def is_attack_available(self, enemy: Enemy):
-        return self.distance_to_object(enemy) < self.attack_range
+        return self.distance_to_object(enemy) <= self.attack_range + self.size / 2
 
     def pick_up_item(self, item: Item):
         self.player_items.append(item)

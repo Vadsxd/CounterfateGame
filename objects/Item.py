@@ -1,4 +1,4 @@
-from random import randint, choice, uniform
+from random import choice, uniform
 from typing import List
 
 import config
@@ -8,8 +8,8 @@ from objects import Enemy, Hole, Player
 class Item:
     def __init__(self):
         self.radius = config.ITEM_RADIUS
-        self.x = randint(30, config.WIDTH - 40)
-        self.y = randint(30, config.HEIGHT - 40)
+        self.x = uniform(30.0, config.WIDTH - 40)
+        self.y = uniform(30.0, config.HEIGHT - 40)
         self.name = None
         self.heal_buff = None
         self.speed_buff = None
@@ -27,7 +27,13 @@ class Item:
             self.speed_buff = 1
 
     def distance_to_object(self, obj) -> float:
-        return ((self.x + self.radius // 2 - obj.x) ** 2 + (self.y + self.radius // 2 - obj.y) ** 2) ** 0.5
+        if hasattr(obj, "size"):
+            obj_center_x = obj.x + obj.size / 2
+            obj_center_y = obj.y + obj.size / 2
+            return ((self.x - obj_center_x) ** 2 + (self.y - obj_center_y) ** 2) ** 0.5
+        else:
+            distance = ((self.x - obj.x) ** 2 + (self.y - obj.y) ** 2) ** 0.5
+            return distance - obj.radius
 
     def check_collision(self, hole: Hole, player: Player, items, enemies: List[Enemy]):
         while True:
