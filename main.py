@@ -1,4 +1,5 @@
 import sys
+import time
 
 import pygame
 
@@ -91,11 +92,15 @@ while running:
 
     # Атака игрока
     if keys[pygame.K_SPACE]:
-        player.attack(map_enemies)
-        pygame.draw.circle(window, config.BLACK,
-                           (player.x + player.size / 2, player.y + player.size / 2), player.attack_range, width=1)
+        current_time = time.time()
+        if current_time - player.last_attack_time >= config.PLAYER_START_ATTACK_RATE:
+            player.attack(map_enemies)
+            player.last_attack_time = current_time
+            pygame.draw.circle(window, config.BLACK,
+                               (player.x + player.size / 2, player.y + player.size / 2), player.attack_range, width=1)
 
-    pygame.display.flip()  # Обновление окна
+    # Обновление окна
+    pygame.display.flip()
 
     # Ограничение частоты кадров
     pygame.time.Clock().tick(config.FPS)

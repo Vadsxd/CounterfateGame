@@ -1,9 +1,7 @@
 from typing import List
 
-import pygame
-
 import config
-from objects import Item, Enemy, Hole
+from objects import Item, Enemy
 
 
 class Player:
@@ -16,8 +14,10 @@ class Player:
         self.speed = config.PLAYER_START_SPEED
         self.damage = config.PLAYER_START_DAMAGE
         self.attack_range = config.PLAYER_START_ATTACK_RANGE
+        self.attack_rate = config.PLAYER_START_ATTACK_RATE
         self.health = config.PLAYER_MAX_HEALTH
         self.max_health = config.PLAYER_MAX_HEALTH
+        self.last_attack_time = 0
         self.player_items = []
 
     def distance_to_object(self, obj) -> float:
