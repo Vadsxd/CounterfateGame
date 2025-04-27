@@ -51,15 +51,13 @@ while running:
     # Управление персонажем
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        player.x -= player.speed
+        player.x = max(player.x - player.speed, 0)
     if keys[pygame.K_RIGHT]:
-        player.x += player.speed
+        player.x = min(player.x + player.speed, config.WIDTH - player.size)
     if keys[pygame.K_UP]:
-        player.y -= player.speed
+        player.y = max(player.y - player.speed, 0)
     if keys[pygame.K_DOWN]:
-        player.y += player.speed
-
-    # TODO: Ограничение персонажа от выхода за границы экрана
+        player.y = min(player.y + player.speed, config.HEIGHT - player.size)
 
     # Проверка на падение в дыру
     distance_to_hole = player.distance_to_object(hole)
